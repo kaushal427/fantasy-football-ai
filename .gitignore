@@ -1,21 +1,50 @@
 # Large data files
-draft-optimizer/data/archive/*.csv
-draft-optimizer/data/archive/weekly_player_stats_defense.csv
-draft-optimizer/data/archive/weekly_player_stats_offense.csv
+draft-optimizer/data/archive/
+*.csv
+!data/processed/*.csv
+!data/sample/*.csv
+!requirements.txt
 
-# Python virtual environment
+# Python
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
 
 # IDE settings
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# Data files
-*.csv
-!requirements.txt
-
-# Misc
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+
+
+
+
+
+.env.*.local.env.local.env# Environment variables# Environment variables
 .env
+.env.local
+.env.*.local
