@@ -1,9 +1,5 @@
-# Large data files
-draft-optimizer/data/archive/
-*.csv
-!data/processed/*.csv
-!data/sample/*.csv
-!requirements.txt
+# Ignore all files in archive directory
+draft-optimizer/data/archive/*
 
 # Python
 .venv/
@@ -39,12 +35,7 @@ coverage.xml
 ehthumbs.db
 Thumbs.db
 
-
-
-
-
-
-.env.*.local.env.local.env# Environment variables# Environment variables
+# Environment variables
 .env
 .env.local
 .env.*.local
