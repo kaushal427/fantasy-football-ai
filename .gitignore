@@ -1,0 +1,21 @@
+# Large data files
+draft-optimizer/data/archive/*.csv
+draft-optimizer/data/archive/weekly_player_stats_defense.csv
+draft-optimizer/data/archive/weekly_player_stats_offense.csv
+
+# Python virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# IDE settings
+.vscode/
+.idea/
+
+# Data files
+*.csv
+!requirements.txt
+
+# Misc
+.DS_Store
+.env
