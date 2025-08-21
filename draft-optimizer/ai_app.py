@@ -63,12 +63,12 @@ def main():
     
     # AI Model Information
     st.sidebar.markdown("---")
-    st.sidebar.subheader("🧠 AI Models Active")
+    st.sidebar.subheader("AI Models Active")
     
     if st.session_state.ai_assistant:
         models = st.session_state.ai_assistant.models.keys()
         for model in models:
-            st.sidebar.success(f"✅ {model}")
+            st.sidebar.success(f"{model}")
     
     # Main content tabs
     tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
@@ -109,8 +109,8 @@ def main():
 def show_ai_draft_strategy(draft_position):
     st.header("🎯 AI-Powered Draft Strategy")
     
-    if st.button("🤖 Generate AI Draft Strategy", type="primary"):
-        with st.spinner("🧠 AI is analyzing data and creating comprehensive strategy..."):
+    if st.button("Generate AI Draft Strategy", type="primary"):
+        with st.spinner("AI is analyzing data and creating comprehensive strategy..."):
             # Use saved league settings if available, otherwise use defaults
             if 'league_settings' in st.session_state:
                 saved_settings = st.session_state.league_settings
@@ -147,7 +147,7 @@ def show_ai_draft_strategy(draft_position):
             strategy = st.session_state.ai_assistant.create_draft_strategy(draft_position, league_settings)
             
             # Display strategy
-            st.subheader(f"🤖 AI Draft Strategy for Position #{draft_position}")
+            st.subheader(f"AI Draft Strategy for Position #{draft_position}")
             
             # AI Model Information
             col1, col2, col3 = st.columns(3)
@@ -159,11 +159,11 @@ def show_ai_draft_strategy(draft_position):
                 st.metric("Strategy Rounds", len(strategy['strategy']))
             
             # Show AI models used
-            st.subheader("🧠 AI Models Utilized")
-            st.success(f"✅ {strategy['ai_models_used']} AI models used for recommendations")
+            st.subheader("AI Models Utilized")
+            st.success(f"{strategy['ai_models_used']} AI models used for recommendations")
             
             # Round-by-round strategy
-            st.subheader("🎯 AI Round-by-Round Strategy")
+            st.subheader("AI Round-by-Round Strategy")
             
             for strategy_item in strategy['strategy']:
                 with st.expander(f"Round {strategy_item['round']} - AI Recommendation"):
@@ -191,11 +191,11 @@ def show_ai_draft_strategy(draft_position):
                     # Availability information
                     availability = pick.get('availability_probability', 0)
                     if availability > 0.8:
-                        st.success(f"✅ High Availability: {availability:.1%}")
+                        st.success(f"High Availability: {availability:.1%}")
                     elif availability > 0.6:
-                        st.info(f"🟡 Good Availability: {availability:.1%}")
+                        st.info(f"Good Availability: {availability:.1%}")
                     else:
-                        st.warning(f"⚠️ Moderate Availability: {availability:.1%}")
+                        st.warning(f"Moderate Availability: {availability:.1%}")
                     
                     # AI Reasoning
                     st.markdown("**AI Reasoning:**")
@@ -203,7 +203,7 @@ def show_ai_draft_strategy(draft_position):
                     
                     # Alternatives
                     if pick['alternatives']:
-                        st.markdown("**🔄 AI Alternatives:**")
+                        st.markdown("**AI Alternatives:**")
                         alt_df = pd.DataFrame(pick['alternatives'])
                         # Filter available columns
                         available_columns = ['player_name', 'position', 'team', 'status', 'score', 'ai_confidence']
@@ -268,23 +268,23 @@ def show_live_ai_assistant(draft_position):
             # Availability information
             availability = pick_data.get('availability_probability', 0)
             if availability > 0.8:
-                st.success(f"✅ High Availability: {availability:.1%}")
+                st.success(f"High Availability: {availability:.1%}")
             elif availability > 0.6:
-                st.info(f"🟡 Good Availability: {availability:.1%}")
+                st.info(f"Good Availability: {availability:.1%}")
             else:
-                st.warning(f"⚠️ Moderate Availability: {availability:.1%}")
+                st.warning(f"Moderate Availability: {availability:.1%}")
             
             # AI Reasoning
-            st.markdown("**🤖 AI Reasoning:**")
+            st.markdown("**AI Reasoning:**")
             st.info(pick_data['reasoning'])
             
             # Draft button
-            if st.button("🤖 Draft This Player (AI Recommended)", type="primary"):
-                st.success(f"🤖 AI successfully drafted {pick_data['player_name']}!")
+            if st.button("Draft This Player (AI Recommended)", type="primary"):
+                st.success(f"AI successfully drafted {pick_data['player_name']}!")
                 st.rerun()
             
             # AI Alternatives
-            st.subheader("🔄 AI Alternatives")
+            st.subheader("AI Alternatives")
             if pick_data['alternatives']:
                 alt_df = pd.DataFrame(pick_data['alternatives'])
                 # Filter available columns
@@ -297,7 +297,7 @@ def show_live_ai_assistant(draft_position):
                 )
     
     # Available players by position with AI scores
-    st.subheader("📋 AI-Scored Available Players")
+    st.subheader("AI-Scored Available Players")
     
     position = st.selectbox("Select Position", ["QB", "RB", "WR", "TE", "DEF"])
     
@@ -330,7 +330,7 @@ def show_live_ai_assistant(draft_position):
         st.warning(f"No {position} players available")
 
 def show_ai_player_rankings():
-    st.header("📊 AI-Powered Player Rankings")
+    st.header("AI-Powered Player Rankings")
     
     # Position filter
     position = st.selectbox("Select Position", ["All", "QB", "RB", "WR", "TE", "DEF"])
@@ -376,13 +376,13 @@ def show_ai_player_rankings():
         st.warning(f"No {position} players available")
 
 def show_rookie_analysis():
-    st.header("⭐ 2025 Rookie Analysis")
+    st.header("2025 Rookie Analysis")
     
     if st.session_state.ai_assistant.rookie_projections is not None:
         rookies = st.session_state.ai_assistant.rookie_projections
         
         # Rookie overview
-        st.subheader("📊 2025 Rookie Class Overview")
+        st.subheader("2025 Rookie Class Overview")
         
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -393,7 +393,7 @@ def show_rookie_analysis():
             st.metric("Average Draft Value", f"{rookies['draft_value'].mean():.2f}")
         
         # Position breakdown
-        st.subheader("📈 Rookie Position Breakdown")
+        st.subheader("Rookie Position Breakdown")
         if 'position' in rookies.columns:
             position_counts = rookies['position'].value_counts()
             
@@ -407,7 +407,7 @@ def show_rookie_analysis():
             st.info("Position data not available for rookies")
         
         # Top rookies by projection
-        st.subheader("🏆 Top Rookies by AI Projection")
+        st.subheader("Top Rookies by AI Projection")
         
         if 'rookie_projection' in rookies.columns:
             top_rookies = rookies.sort_values('rookie_projection', ascending=False).head(10)
@@ -438,7 +438,7 @@ def show_rookie_analysis():
             st.info("Rookie projection data not available")
         
         # Rookie data table
-        st.subheader("📋 Complete Rookie Analysis")
+        st.subheader("Complete Rookie Analysis")
         available_columns = ['player_name', 'Name', 'position', 'Position', 'team', 'Drafted By', 'athletic_score', 'draft_value', 'rookie_projection']
         display_columns = [col for col in available_columns if col in rookies.columns]
         
@@ -452,7 +452,7 @@ def show_rookie_analysis():
             st.info("No rookie data available for display")
         
         # Athletic analysis
-        st.subheader("🏃‍♂️ Athletic Analysis")
+        st.subheader("Athletic Analysis")
         
         # Check if athletic data is available
         athletic_columns = ['forty_yard', 'vertical_jump', 'position']
@@ -502,10 +502,10 @@ def show_rookie_analysis():
         st.warning("No rookie data available")
 
 def show_ai_analytics():
-    st.header("🔍 AI Analytics")
+    st.header("AI Analytics")
     
     # Player status distribution
-    st.subheader("📊 Player Status Distribution")
+    st.subheader("Player Status Distribution")
     
     current_players = st.session_state.ai_assistant.current_players
     status_counts = current_players['status'].value_counts()
@@ -518,7 +518,7 @@ def show_ai_analytics():
     st.plotly_chart(fig, use_container_width=True)
     
     # AI confidence distribution
-    st.subheader("🤖 AI Confidence Distribution")
+    st.subheader("AI Confidence Distribution")
     
     fig = px.histogram(
         current_players,
@@ -529,7 +529,7 @@ def show_ai_analytics():
     st.plotly_chart(fig, use_container_width=True)
     
     # Position analysis
-    st.subheader("📈 Position Analysis")
+    st.subheader("Position Analysis")
     
     position_analysis = current_players.groupby('position').agg({
         'ai_confidence': 'mean',
@@ -540,7 +540,7 @@ def show_ai_analytics():
     st.dataframe(position_analysis, use_container_width=True)
     
     # Team analysis
-    st.subheader("🏈 Team Analysis")
+    st.subheader("Team Analysis")
     
     team_analysis = current_players.groupby('team').agg({
         'ai_confidence': 'mean',
@@ -558,13 +558,13 @@ def show_ai_analytics():
     st.plotly_chart(fig, use_container_width=True)
 
 def show_model_insights():
-    st.header("📈 AI Model Insights")
+    st.header("AI Model Insights")
     
     ai_assistant = st.session_state.ai_assistant
     
     # Feature importance
     if 'veteran' in ai_assistant.feature_importance:
-        st.subheader("🔍 Veteran Model Feature Importance")
+        st.subheader("Veteran Model Feature Importance")
         
         feature_importance = ai_assistant.feature_importance['veteran']
         feature_df = pd.DataFrame([
@@ -582,7 +582,7 @@ def show_model_insights():
         st.plotly_chart(fig, use_container_width=True)
     
     # Model performance metrics
-    st.subheader("📊 Model Performance Metrics")
+    st.subheader("Model Performance Metrics")
     
     col1, col2, col3 = st.columns(3)
     
@@ -596,7 +596,7 @@ def show_model_insights():
         st.metric("Injury Model", "Active" if 'injury_risk' in ai_assistant.models else "Inactive")
     
     # Data quality metrics
-    st.subheader("📋 Data Quality Metrics")
+    st.subheader("Data Quality Metrics")
     
     if ai_assistant.yearly_offense is not None:
         data_quality = {
@@ -614,9 +614,9 @@ def show_model_insights():
         st.dataframe(quality_df, use_container_width=True)
 
 def show_ai_settings():
-    st.header("⚙️ AI Settings")
+    st.header("AI Settings")
     
-    st.subheader("🤖 AI Model Configuration")
+    st.subheader("AI Model Configuration")
     
     # Model parameters
     st.markdown("**Current AI Models:**")
@@ -624,24 +624,24 @@ def show_ai_settings():
     ai_assistant = st.session_state.ai_assistant
     
     if 'veteran_performance' in ai_assistant.models:
-        st.success("✅ Veteran Performance Model (Random Forest)")
+        st.success("Veteran Performance Model (Random Forest)")
         st.markdown("- Uses historical performance data")
         st.markdown("- Predicts future fantasy points")
         st.markdown("- Considers age, experience, and efficiency metrics")
     
     if ai_assistant.rookie_projections is not None:
-        st.success("✅ Rookie Projection Model")
+        st.success("Rookie Projection Model")
         st.markdown("- Combines combine metrics and draft position")
         st.markdown("- Athletic score calculation")
         st.markdown("- Position-specific adjustments")
     
     if 'injury_risk' in ai_assistant.models:
-        st.success("✅ Injury Risk Model (Gradient Boosting)")
+        st.success("Injury Risk Model (Gradient Boosting)")
         st.markdown("- Predicts injury likelihood")
         st.markdown("- Based on age and usage patterns")
     
     # Scoring weights
-    st.subheader("⚖️ Scoring Weights")
+    st.subheader("Scoring Weights")
     
     st.markdown("**Neural Network Scoring Layers:**")
     st.markdown("1. **Base Performance** - Historical stats and projections")
@@ -650,10 +650,10 @@ def show_ai_settings():
     st.markdown("4. **Meta Factors** - Market inefficiencies and news sentiment")
     
     # Active player bonuses
-    st.subheader("🎯 Active Player Bonuses")
+    st.subheader("Active Player Bonuses")
     
     bonus_data = {
-        'Status': ['🟢 2024 NFL Veteran', '🟡 2023 NFL Veteran', '⭐ 2025 Rookie'],
+        'Status': ['2024 NFL Veteran', '2023 NFL Veteran', '2025 Rookie'],
         'Bonus': [50, 25, 30],
         'Description': ['Currently active', 'Recently active', 'High upside potential']
     }
@@ -662,10 +662,10 @@ def show_ai_settings():
     st.dataframe(bonus_df, use_container_width=True)
 
 def show_league_settings():
-    st.header("📋 League Settings & Draft Strategy Guide")
+    st.header("League Settings & Draft Strategy Guide")
     
     # League Configuration
-    st.subheader("🏈 League Configuration")
+    st.subheader("League Configuration")
     
     col1, col2 = st.columns(2)
     
@@ -681,7 +681,7 @@ def show_league_settings():
         starting_te = st.number_input("Starting TEs", min_value=1, max_value=2, value=1)
     
     # Position Requirements
-    st.subheader("📊 Position Requirements")
+    st.subheader("Position Requirements")
     
     col1, col2, col3 = st.columns(3)
     
@@ -698,10 +698,10 @@ def show_league_settings():
         ir_slots = st.number_input("IR Slots", min_value=0, max_value=5, value=1)
     
     # Draft Strategy Guide
-    st.subheader("📚 Value-Based Drafting Strategy Guide")
+    st.subheader("Value-Based Drafting Strategy Guide")
     
     # Core Philosophy
-    st.markdown("### 🎯 Core Philosophy: Wait on QB, Prioritize Skill Positions")
+    st.markdown("### Core Philosophy: Wait on QB, Prioritize Skill Positions")
     st.markdown("""
     The foundation of successful fantasy drafting is understanding positional scarcity and value. 
     Quarterbacks should generally be avoided in early rounds because the position has less week-to-week 
@@ -709,7 +709,7 @@ def show_league_settings():
     """)
     
     # Scoring Format Considerations
-    st.markdown("### 📊 Scoring Format Considerations")
+    st.markdown("### Scoring Format Considerations")
     
     if ppr_scoring == 0.5:
         st.markdown("**0.5 PPR Leagues**")
@@ -737,7 +737,7 @@ def show_league_settings():
         """)
     
     # Round-by-Round Strategy
-    st.markdown("### 🎯 Round-by-Round Strategy")
+    st.markdown("### Round-by-Round Strategy")
     
     col1, col2 = st.columns(2)
     
@@ -776,7 +776,7 @@ def show_league_settings():
         """)
     
     # Why Wait on QB?
-    st.markdown("### 🤔 Why Wait on QB?")
+    st.markdown("### Why Wait on QB?")
     
     col1, col2 = st.columns(2)
     
@@ -804,7 +804,7 @@ def show_league_settings():
         """)
     
     # Draft Day Execution Tips
-    st.markdown("### 📋 Draft Day Execution Tips")
+    st.markdown("### Draft Day Execution Tips")
     
     col1, col2 = st.columns(2)
     
@@ -843,7 +843,7 @@ def show_league_settings():
         """)
     
     # League-Specific Adjustments
-    st.markdown("### 🏆 League-Specific Adjustments")
+    st.markdown("### League-Specific Adjustments")
     
     if num_teams == 10:
         st.markdown("**10-Team Leagues**")
@@ -869,7 +869,7 @@ def show_league_settings():
         """)
     
     # Save Settings Button
-    if st.button("💾 Save League Settings", type="primary"):
+    if st.button("Save League Settings", type="primary"):
         league_settings = {
             'num_teams': num_teams,
             'draft_type': draft_type,
@@ -887,7 +887,7 @@ def show_league_settings():
         }
         
         st.session_state.league_settings = league_settings
-        st.success("✅ League settings saved! These will be used for AI recommendations.")
+        st.success("League settings saved! These will be used for AI recommendations.")
 
 if __name__ == "__main__":
     main()
