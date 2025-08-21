@@ -37,7 +37,7 @@ class AIDraftAssistant:
         
     def load_all_data(self):
         """Load all data files with comprehensive preprocessing"""
-        print("🤖 Loading and preprocessing all data files...")
+        print("Loading and preprocessing all data files...")
         
         try:
             # Load all CSV files
@@ -60,10 +60,10 @@ class AIDraftAssistant:
             if os.path.exists(combine_path):
                 self.combine_data = pd.read_csv(combine_path)
             else:
-                print("⚠️ nfl_combine.csv not found, creating mock data...")
+                print("nfl_combine.csv not found, creating mock data...")
                 self.combine_data = self._create_mock_combine_data()
             
-            print("✅ All data files loaded successfully!")
+            print("All data files loaded successfully!")
             
             # Apply AI preprocessing
             self._apply_ai_preprocessing()
@@ -72,24 +72,24 @@ class AIDraftAssistant:
             self._create_realistic_adp_data()
             
         except Exception as e:
-            print(f"❌ Error loading data: {e}")
+            print(f"Error loading data: {e}")
             raise
     
     def _create_realistic_adp_data(self):
         """Create realistic ADP (Average Draft Position) data based on actual player performance"""
-        print("📊 Creating realistic ADP data from actual player performance...")
+        print("Creating realistic ADP data from actual player performance...")
         
         if self.yearly_offense is None or len(self.yearly_offense) == 0:
-            print("⚠️ No yearly offense data available, creating basic ADP structure")
+            print("No yearly offense data available, creating basic ADP structure")
             self.adp_data = pd.DataFrame()
             return
         
         # Get the most recent season data for active players
         max_season = self.yearly_offense['season'].max()
-        print(f"📅 Using data from season {max_season}")
+        print(f"Using data from season {max_season}")
         
         recent_data = self.yearly_offense[self.yearly_offense['season'] == max_season]
-        print(f"📊 Found {len(recent_data)} players from season {max_season}")
+        print(f"Found {len(recent_data)} players from season {max_season}")
         
         # Filter for players with meaningful fantasy production (less restrictive)
         active_players = recent_data[
@@ -97,10 +97,10 @@ class AIDraftAssistant:
             (recent_data['games_played_season'] >= 1)  # At least 1 game played (was 3)
         ].copy()
         
-        print(f"🎯 Found {len(active_players)} active players with fantasy production")
+        print(f"Found {len(active_players)} active players with fantasy production")
         
         if len(active_players) == 0:
-            print("⚠️ No recent active players found, using fallback data")
+            print("No recent active players found, using fallback data")
             self.adp_data = pd.DataFrame()
             return
         
@@ -160,16 +160,16 @@ class AIDraftAssistant:
             })
         
         self.adp_data = pd.DataFrame(adp_data)
-        print(f"✅ Created ADP data for {len(self.adp_data)} players based on actual performance")
+        print(f"Created ADP data for {len(self.adp_data)} players based on actual performance")
         
         # Show top 10 for verification
-        print("🏆 Top 10 ADP Players:")
+        print("Top 10 ADP Players:")
         for _, player in self.adp_data.head(10).iterrows():
             print(f"   {player['adp']:2d}. {player['player_name']} ({player['position']}) - {player['team']} - {player['fantasy_points']:.1f} pts")
     
     def _validate_snake_draft_logic(self, draft_position: int, league_size: int = 12):
         """Validate and display snake draft pick calculations"""
-        print(f"🔍 Snake Draft Logic - {league_size} teams, Position #{draft_position}")
+        print(f"Snake Draft Logic - {league_size} teams, Position #{draft_position}")
         
         for round_num in range(1, 6):  # Show first 5 rounds
             if round_num % 2 == 1:  # Odd rounds - forward order
@@ -182,11 +182,11 @@ class AIDraftAssistant:
     def get_available_players_at_pick(self, draft_position: int, round_num: int, league_size: int = 12):
         """FIXED: Get realistically available players based on strict ADP logic"""
         if self.current_players is None or len(self.current_players) == 0:
-            print("⚠️ No classified players available")
+            print("No classified players available")
             return pd.DataFrame()
         
         if self.adp_data is None or len(self.adp_data) == 0:
-            print("⚠️ No ADP data available")
+            print("No ADP data available")
             return pd.DataFrame()
         
         # Show snake draft logic for first few rounds
@@ -199,7 +199,7 @@ class AIDraftAssistant:
         else:  # Even rounds - reverse order
             pick_number = round_num * league_size - draft_position + 1
         
-        print(f"🎯 Round {round_num}, Pick #{pick_number}")
+        print(f"Round {round_num}, Pick #{pick_number}")
         
         available_players = []
         
@@ -308,9 +308,9 @@ class AIDraftAssistant:
                 ascending=[False, False]
             )
             
-            print(f"📋 Found {len(available_df)} realistically available players")
+            print(f"Found {len(available_df)} realistically available players")
             if len(available_df) > 0:
-                print("🏆 Top 5 available players:")
+                print("Top 5 available players:")
                 for i, (_, player) in enumerate(available_df.head(5).iterrows()):
                     past_adp = player['picks_past_adp']
                     past_text = f"+{past_adp}" if past_adp > 0 else f"{past_adp}"
@@ -371,7 +371,6 @@ class AIDraftAssistant:
         return 1.0
     
     def _find_best_skill_position_alternative(self, available_players, round_num):
-        """ENHANCED: Find best RB/WR alternative to avoid early QB drafting"""
         if round_num > 6:  # After Round 6, QBs are acceptable per value-based strategy
             return None
             
@@ -398,7 +397,6 @@ class AIDraftAssistant:
         return None
     
     def get_optimal_pick(self, available_players, draft_context):
-        """ENHANCED: Get optimal pick with strict value-based drafting enforcement"""
         if available_players is None or len(available_players) == 0:
             return None, None
         
@@ -419,13 +417,13 @@ class AIDraftAssistant:
         if round_num <= 6:
             top_player = players_with_scores.iloc[0]
             if top_player['position'] == 'QB':
-                print(f"🚫 Avoiding QB in Round {round_num} per value-based strategy")
+                print(f"Avoiding QB in Round {round_num} per value-based strategy")
                 
                 # Look for skill position alternative
                 skill_alternative = self._find_best_skill_position_alternative(players_with_scores, round_num)
                 
                 if skill_alternative is not None:
-                    print(f"✅ Selecting {skill_alternative['player_name']} ({skill_alternative['position']}) instead")
+                    print(f"Selecting {skill_alternative['player_name']} ({skill_alternative['position']}) instead")
                     
                     # Recalculate score for the alternative
                     alt_score = self.calculate_neural_network_score(skill_alternative, draft_context)
@@ -446,7 +444,7 @@ class AIDraftAssistant:
                         'alternatives': players_with_scores.head(3).to_dict('records')
                     }
                 else:
-                    print(f"⚠️ No suitable skill position alternatives found")
+                    print(f"No suitable skill position alternatives found")
         
         # Return top-scoring player
         top_player = players_with_scores.iloc[0]
@@ -473,15 +471,7 @@ class AIDraftAssistant:
         """Generate enhanced AI reasoning with value-based strategy context"""
         reasoning_parts = []
         round_num = draft_context.get('round', 1)
-        
-        # Status-based reasoning
-        if '🟢' in pick['status']:
-            reasoning_parts.append("Active 2024 player with proven NFL production")
-        elif '🟡' in pick['status']:
-            reasoning_parts.append("Recently active player with established track record")
-        elif '⭐' in pick['status']:
-            reasoning_parts.append("High-upside 2025 rookie prospect")
-        
+                
         # Value-based strategy reasoning
         position = pick['position']
         if round_num <= 6 and position in ['RB', 'WR']:
@@ -512,37 +502,7 @@ class AIDraftAssistant:
             reasoning_parts.append(f"Fills {position} roster need")
         
         return "; ".join(reasoning_parts)
-
-    def _create_mock_combine_data(self):
-        """Create realistic mock combine data for 2025 prospects"""
-        positions = ['QB', 'RB', 'WR', 'TE', 'DEF']
-        names = [
-            'Caleb Williams', 'Drake Maye', 'Jayden Daniels', 'Marvin Harrison Jr', 
-            'Malik Nabers', 'Rome Odunze', 'Brock Bowers', 'Trey Benson', 'Blake Corum',
-            'Jonathon Brooks', 'Adonai Mitchell', 'Keon Coleman', 'Xavier Worthy',
-            'Ja\'Lynn Polk', 'Troy Franklin', 'Brian Thomas Jr', 'Ladd McConkey'
-        ]
         
-        combine_data = []
-        for i, name in enumerate(names):
-            position = positions[i % len(positions)]
-            combine_data.append({
-                'player_name': name,
-                'position': position,
-                'college': f'College_{i}',
-                'height': np.random.normal(73, 2),
-                'weight': np.random.normal(220, 25),
-                'forty_yard': max(4.0, min(5.5, np.random.normal(4.6, 0.2))),
-                'vertical_jump': max(25, min(45, np.random.normal(35, 4))),
-                'broad_jump': max(100, min(140, np.random.normal(122, 9))),
-                'bench_press': max(5, min(30, np.random.normal(16, 3))),
-                'draft_round': np.random.choice([1, 2, 3, 4, 5, 6, 7], p=[0.3, 0.25, 0.2, 0.15, 0.07, 0.02, 0.01]),
-                'draft_pick': np.random.randint(1, 260),
-                'team': np.random.choice(['KC', 'BUF', 'CIN', 'BAL', 'LAC', 'MIA', 'NE', 'NYJ', 'PIT', 'CLE', 'HOU', 'IND', 'JAX', 'TEN', 'DEN', 'LV', 'LAR', 'SF', 'SEA', 'ARI', 'DAL', 'PHI', 'NYG', 'WAS', 'CHI', 'DET', 'GB', 'MIN', 'ATL', 'CAR', 'NO', 'TB'])
-            })
-        
-        return pd.DataFrame(combine_data)
-    
     def _remove_outliers(self):
         """Remove statistical outliers from safe numerical columns only"""
         print("🔍 Removing statistical outliers from safe columns...")
@@ -568,7 +528,7 @@ class AIDraftAssistant:
                         (self.yearly_offense[col] <= upper_bound)
                     ]
             
-            print(f"✅ Offense outliers removed, {len(self.yearly_offense)} players remaining")
+            print(f"Offense outliers removed, {len(self.yearly_offense)} players remaining")
         
         # Process yearly defense data
         if self.yearly_defense is not None and len(self.yearly_defense) > 0:
@@ -590,14 +550,11 @@ class AIDraftAssistant:
                         (self.yearly_defense[col] <= upper_bound)
                     ]
             
-            print(f"✅ Defense outliers removed, {len(self.yearly_defense)} players remaining")
+            print(f"Defense outliers removed, {len(self.yearly_defense)} players remaining")
         
-        print("✅ Outliers removed from safe columns only")
+        print("Outliers removed from safe columns only")
     
-    def _impute_missing_values(self):
-        """Impute missing values using intelligent strategies"""
-        print("🔧 Imputing missing values...")
-        
+    def _impute_missing_values(self):        
         # Process yearly offense data
         if self.yearly_offense is not None and len(self.yearly_offense) > 0:
             # Age: median by position
@@ -633,27 +590,14 @@ class AIDraftAssistant:
                     lambda x: x.fillna(x.median())
                 )
         
-        print("✅ Missing values imputed")
+        print(Missing values imputed")
     
-    def _apply_ai_preprocessing(self):
-        """Apply advanced AI preprocessing techniques"""
-        print("🧠 Applying AI preprocessing...")
-        
-        # 1. Outlier detection and removal
+    def _apply_ai_preprocessing(self):        
         self._remove_outliers()
-        
-        # 2. Missing value imputation using player similarity
         self._impute_missing_values()
-        
-        # 3. Feature engineering
         self._engineer_features()
         
-        print("✅ AI preprocessing completed!")
-
-    def _engineer_features(self):
-        """Engineer advanced features for predictive modeling"""
-        print("🔧 Engineering advanced features...")
-        
+    def _engineer_features(self):        
         # Process yearly offense data
         if self.yearly_offense is not None and len(self.yearly_offense) > 0:
             # Age-related features
@@ -719,12 +663,8 @@ class AIDraftAssistant:
                     self.yearly_defense['games_played_season'].replace(0, 1)
                 )
         
-        print("✅ Advanced features engineered")
 
-    def build_ml_models(self):
-        """Build machine learning models for player performance prediction"""
-        print("🤖 Building machine learning models...")
-        
+    def build_ml_models(self):        
         try:
             # Build veteran performance model
             if self.yearly_offense is not None and len(self.yearly_offense) > 0:
@@ -733,15 +673,13 @@ class AIDraftAssistant:
             # Build rookie projection model
             if self.combine_data is not None and len(self.combine_data) > 0:
                 self._build_rookie_model()
-            
-            print(f"✅ Built {len(self.models)} ML models")
-            
+                        
             # Show model details
             if 'veteran_performance' in self.models:
-                print(f"✅ Veteran model has {len(self.feature_importance.get('veteran_performance', []))} features")
+                print(f"Veteran model has {len(self.feature_importance.get('veteran_performance', []))} features")
             
         except Exception as e:
-            print(f"⚠️ Error building ML models: {e}")
+            print(f"Error building ML models: {e}")
             # Create fallback models
             self._create_fallback_models()
     
@@ -764,7 +702,7 @@ class AIDraftAssistant:
             model_data = self.yearly_offense[features + [target]].dropna()
             
             if len(model_data) < 100:  # Need sufficient data
-                print("⚠️ Insufficient data for veteran model")
+                print("Insufficient data for veteran model")
                 return
             
             X = model_data[features]
@@ -786,10 +724,10 @@ class AIDraftAssistant:
             self.models['veteran_performance'] = model
             self.feature_importance['veteran_performance'] = dict(zip(features, model.feature_importances_))
             
-            print(f"✅ Veteran model built - R²: {r2:.3f}, MSE: {mse:.2f}")
+            print(f"Veteran model built - R²: {r2:.3f}, MSE: {mse:.2f}")
             
         except Exception as e:
-            print(f"⚠️ Error building veteran model: {e}")
+            print(f"Error building veteran model: {e}")
     
     def _build_rookie_model(self):
         """Build model for rookie player projection"""
@@ -799,7 +737,7 @@ class AIDraftAssistant:
             missing_cols = [col for col in required_cols if col not in self.combine_data.columns]
             
             if missing_cols:
-                print(f"⚠️ Missing combine columns: {missing_cols}. Using simplified rookie model.")
+                print(f"Missing combine columns: {missing_cols}. Using simplified rookie model.")
                 self._create_simplified_rookie_model()
                 return
             
@@ -811,7 +749,7 @@ class AIDraftAssistant:
             model_data = self.combine_data[features + [target]].dropna()
             
             if len(model_data) < 50:  # Need sufficient data
-                print("⚠️ Insufficient data for rookie model")
+                print("Insufficient data for rookie model")
                 return
             
             X = model_data[features]
@@ -833,15 +771,15 @@ class AIDraftAssistant:
             self.models['rookie_projection'] = model
             self.feature_importance['rookie_projection'] = dict(zip(features, model.feature_importances_))
             
-            print(f"✅ Rookie model built - R²: {r2:.3f}, MSE: {mse:.2f}")
+            print(f"Rookie model built - R²: {r2:.3f}, MSE: {mse:.2f}")
             
         except Exception as e:
-            print(f"⚠️ Error building rookie model: {e}")
+            print(f"Error building rookie model: {e}")
             self._create_simplified_rookie_model()
     
     def _create_simplified_rookie_model(self):
         """Create a simplified rookie model when combine data is limited"""
-        print("🔧 Creating simplified rookie model...")
+        print("Creating simplified rookie model...")
         
         # Simple rule-based model
         def simple_rookie_score(player_data):
@@ -868,11 +806,11 @@ class AIDraftAssistant:
             return min(1.0, max(0.0, score))
         
         self.models['rookie_projection'] = simple_rookie_score
-        print("✅ Simplified rookie model created")
+        print("Simplified rookie model created")
     
     def _create_fallback_models(self):
         """Create fallback models when ML training fails"""
-        print("🔧 Creating fallback models...")
+        print("Creating fallback models...")
         
         # Simple fallback for veteran performance
         def fallback_veteran_score(player_data):
@@ -888,11 +826,11 @@ class AIDraftAssistant:
                 return fantasy_points
         
         self.models['veteran_performance'] = fallback_veteran_score
-        print("✅ Fallback models created")
+        print("Fallback models created")
 
     def classify_active_players(self):
         """Classify players as active veterans or rookies with AI confidence scores"""
-        print("🎯 Classifying active players with AI...")
+        print("Classifying active players with AI...")
         
         try:
             active_players = []
@@ -912,15 +850,15 @@ class AIDraftAssistant:
                 for _, player in active_veterans.iterrows():
                     # Determine player status based on recent activity
                     if player['fantasy_points_ppr'] >= 100:  # High production
-                        status = '🟢 2024 NFL Veteran'
+                        status = '2024 NFL Veteran'
                         active_bonus = 50
                         ai_confidence = 0.95
                     elif player['fantasy_points_ppr'] >= 50:  # Moderate production
-                        status = '🟡 2023 NFL Veteran'
+                        status = '2023 NFL Veteran'
                         active_bonus = 25
                         ai_confidence = 0.85
                     else:  # Low production but active
-                        status = '🟡 2023 NFL Veteran'
+                        status = '2023 NFL Veteran'
                         active_bonus = 15
                         ai_confidence = 0.75
                     
@@ -950,7 +888,7 @@ class AIDraftAssistant:
                         'player_name': rookie.get('player_name', f"Rookie_{len(active_players)}"),
                         'position': rookie.get('position', 'RB'),
                         'team': rookie.get('team', 'FA'),
-                        'status': '⭐ 2025 Rookie',
+                        'status': '2025 Rookie',
                         'ai_confidence': 0.80,
                         'active_bonus': 30,
                         'last_active_year': 2025,
@@ -970,13 +908,13 @@ class AIDraftAssistant:
             
             # Show classification summary
             status_counts = self.current_players['status'].value_counts()
-            print(f"✅ Classified {len(self.current_players)} active players")
+            print(f"Classified {len(self.current_players)} active players")
             for status, count in status_counts.items():
                 print(f"   {status}: {count} players")
-            print(f"✅ Average AI confidence: {avg_confidence:.2f}")
+            print(f"Average AI confidence: {avg_confidence:.2f}")
             
         except Exception as e:
-            print(f"❌ Error classifying players: {e}")
+            print(f"Error classifying players: {e}")
             # Create fallback data
             self._create_fallback_player_data()
     
@@ -1060,7 +998,7 @@ class AIDraftAssistant:
                 'player_name': 'Sample Player',
                 'position': 'RB',
                 'team': 'FA',
-                'status': '🟢 2024 NFL Veteran',
+                'status': '2024 NFL Veteran',
                 'ai_confidence': 0.8,
                 'active_bonus': 50,
                 'last_active_year': 2024,
@@ -1072,11 +1010,11 @@ class AIDraftAssistant:
         ]
         
         self.current_players = pd.DataFrame(fallback_players)
-        print("✅ Fallback player data created")
+        print("Fallback player data created")
 
     def create_draft_strategy(self, draft_position: int, league_settings: dict):
         """Create comprehensive AI-powered draft strategy"""
-        print(f"🎯 Creating AI draft strategy for position #{draft_position}")
+        print(f"Creating AI draft strategy for position #{draft_position}")
         
         try:
             # Build ML models if not already built
@@ -1100,7 +1038,7 @@ class AIDraftAssistant:
                 available = self.get_available_players_at_pick(draft_position, round_num, league_size)
                 
                 if len(available) == 0:
-                    print(f"⚠️ No players available in Round {round_num}")
+                    print(f"No players available in Round {round_num}")
                     continue
                 
                 # Create draft context
@@ -1129,10 +1067,10 @@ class AIDraftAssistant:
                     
                     print(f"Round {round_num}: {pick_data['player_name']} ({pick_data['position']}) - Score: {pick_data['score']:.1f}")
                 else:
-                    print(f"⚠️ No optimal pick found in Round {round_num}")
+                    print(f"No optimal pick found in Round {round_num}")
             
-            print(f"✅ Created draft strategy with {len(strategy)} rounds")
-            print(f"✅ Used {len(self.models)} AI models")
+            print(f"Created draft strategy with {len(strategy)} rounds")
+            print(f"Used {len(self.models)} AI models")
             
             # Show first few rounds
             for item in strategy[:3]:
@@ -1147,7 +1085,7 @@ class AIDraftAssistant:
             }
             
         except Exception as e:
-            print(f"❌ Error creating draft strategy: {e}")
+            print(f"Error creating draft strategy: {e}")
             # Return fallback strategy
             return self._create_fallback_strategy(draft_position, league_settings)
     
@@ -1163,7 +1101,7 @@ class AIDraftAssistant:
                     'player_name': f'Fallback Player {round_num}',
                     'position': 'RB' if round_num <= 3 else 'WR' if round_num <= 6 else 'QB',
                     'team': 'FA',
-                    'status': '🟢 2024 NFL Veteran',
+                    'status': '2024 NFL Veteran',
                     'score': 100 - round_num * 5,
                     'ai_confidence': 0.8,
                     'fantasy_points': 100 - round_num * 5,
@@ -1216,11 +1154,11 @@ class AIDraftAssistant:
     
     def _calculate_base_performance_score(self, player_data):
         """Calculate base performance score based on player status and production"""
-        if player_data['status'] == '🟢 2024 NFL Veteran':
+        if player_data['status'] == '2024 NFL Veteran':
             base_score = self._calculate_veteran_base_score(player_data)
-        elif player_data['status'] == '🟡 2023 NFL Veteran':
+        elif player_data['status'] == '2023 NFL Veteran':
             base_score = self._calculate_veteran_base_score(player_data) * 0.8
-        elif player_data['status'] == '⭐ 2025 Rookie':
+        elif player_data['status'] == '2025 Rookie':
             base_score = self._calculate_rookie_base_score(player_data)
         else:
             base_score = 0
@@ -1286,7 +1224,7 @@ class AIDraftAssistant:
                 meta_score += 10
         
         # Rookie upside for 2025 class
-        if player_data['status'] == '⭐ 2025 Rookie':
+        if player_data['status'] == '2025 Rookie':
             meta_score += 15  # Rookie upside bonus
         
         # Injury risk adjustment
